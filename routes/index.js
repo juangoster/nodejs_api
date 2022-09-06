@@ -1,11 +1,14 @@
+const express = require('express');
+const router = express.Router();
 const productRouter = require('./products.router');
 const categoriesRouter = require('./categories.router');
 const usersRouter = require('./users.router');
 
 function routerApi (app){
-    app.use('/products', productRouter);
-    app.use('/categories', categoriesRouter);
-    app.use('/users', usersRouter);
+    app.use('/api/v1', router)//path global para el versionamiento de la api
+    router.use('/products', productRouter);
+    router.use('/categories', categoriesRouter);
+    router.use('/users', usersRouter);
 }
 
 module.exports = routerApi;
