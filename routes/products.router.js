@@ -1,26 +1,31 @@
 const express = require('express');
 const ProductService = require('../services/products.service')
+const service = new ProductService();
 const router = express.Router();
-const productService = new ProductService();
+
 
 router.get('/', (req, res)=>{
-    const products = productService.find();
+    const products = service.find();
     res.json(products)
-  })
+})
   
 router.get('/:id', (req, res)=>{
       const {id} = req.params
-      const product = productService.findOne(id)
+      const product = service.findOne(id)
       res.json(product)
+})
+
+router.delete('/:id', (req, res)=>{
+  const {id}= req.params;
+  this.service.delete(id);
+  
 })
 
 router.post('/', (req, res)=>{
   const body = req.body;
-  res.status(201).json({
-    message: 'created',
-    data: body
-  })
-  this.productService.create(body);
+  const newProduct = service.create(body);
+  res.status(201).json(newProduct)
+  
 })
 
 router.put('/:id', (req, res)=>{
@@ -33,14 +38,6 @@ router.put('/:id', (req, res)=>{
   })
 })
 
-router.delete('/:id', (req, res)=>{
-  const {id}= req.params;
-  this.productService.delete(id);
-  res.json({
-    id,
-    message: 'deleted',
-  })
-  
-})
+
 
 module.exports = router;

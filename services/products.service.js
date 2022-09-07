@@ -20,15 +20,19 @@ class ProductService {
         }
     }
 
-    create(body){
-        this.products.push({data: body})
-
+    create(data){
+        const newProduct = {
+            id: 999,
+            ...data
+        }
+        this.products.push(newProduct)
+        return newProduct;
     }
     find(){
         return this.products;
     }
     findOne(id){
-        return this.products[id];
+        return this.products.find(item => item.id == id);
         
     }
     delete(id){
