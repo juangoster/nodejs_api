@@ -5,19 +5,20 @@ const router = express.Router();
 
 
 router.get('/', (req, res)=>{
-    const products = service.find();
+    const products = service.getAll();
     res.json(products)
 })
   
 router.get('/:id', (req, res)=>{
       const {id} = req.params
-      const product = service.findOne(id)
+      const product = service.getOne(id)
       res.json(product)
 })
 
 router.delete('/:id', (req, res)=>{
   const {id}= req.params;
-  this.service.delete(id);
+  const deleted = service.delete(id);
+  res.json(deleted)
   
 })
 
@@ -28,14 +29,21 @@ router.post('/', (req, res)=>{
   
 })
 
+
 router.put('/:id', (req, res)=>{
   const {id}= req.params;
   const body = req.body;
-  res.json({
-    id,
-    message: 'updated',
-    data: body
-  })
+  const productUpdated = service.update(id, body);
+  res.json(productUpdated)
+
+})
+
+router.patch('/:id', (req, res)=>{
+  const {id}= req.params;
+  const body = req.body;
+  const productUpdated = service.updatePartial(id, body);
+  res.json(productUpdated)
+
 })
 
 

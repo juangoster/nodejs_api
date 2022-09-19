@@ -28,18 +28,42 @@ class ProductService {
         this.products.push(newProduct)
         return newProduct;
     }
-    find(){
+    getAll(){
         return this.products;
     }
-    findOne(id){
+    getOne(id){
+
         return this.products.find(item => item.id == id);
         
     }
     delete(id){
-        this.products.splice(id,1);
+        const index = this.products.findIndex(item => item.id == id);
+        if (index ===  -1){
+            throw new Error('producto no encontrado');
+        }
+        this.products.splice(index, 1);
+        return {message: 'product deleted'};    
     }
-    update(id){
-        
+    update(id, data){
+        const index = this.products.findIndex(item => item.id == id);
+        if (index ===  -1){
+            throw new Error('producto no encontrado');
+        }
+        this.products[index] = data;
+        return this.products[index];
+    }
+    updatePartial(id, data){
+        const index = this.products.findIndex(item => item.id == id);
+        if (index ===  -1){
+            throw new Error('producto no encontrado');
+        }
+        const producto = this.products[index]
+
+        this.products[index] = {
+            ...producto,
+            ...data
+        };
+        return this.products[index];
     }
 }
 
