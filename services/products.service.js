@@ -19,8 +19,8 @@ class ProductService {
             }) 
         }
     }
-
-    create(data){
+//---------------------------------------------------------------------------
+    async create(data){
         const newProduct = {
             id: 999,
             ...data
@@ -28,15 +28,13 @@ class ProductService {
         this.products.push(newProduct)
         return newProduct;
     }
-    getAll(){
+    async getAll(){
         return this.products;
     }
-    getOne(id){
-
+    async getOne(id){
         return this.products.find(item => item.id == id);
-        
     }
-    delete(id){
+    async delete(id){
         const index = this.products.findIndex(item => item.id == id);
         if (index ===  -1){
             throw new Error('producto no encontrado');
@@ -44,7 +42,7 @@ class ProductService {
         this.products.splice(index, 1);
         return {message: 'product deleted'};    
     }
-    update(id, data){
+    async update(id, data){
         const index = this.products.findIndex(item => item.id == id);
         if (index ===  -1){
             throw new Error('producto no encontrado');
@@ -52,13 +50,12 @@ class ProductService {
         this.products[index] = data;
         return this.products[index];
     }
-    updatePartial(id, data){
+    async updatePartial(id, data){
         const index = this.products.findIndex(item => item.id == id);
         if (index ===  -1){
             throw new Error('producto no encontrado');
         }
         const producto = this.products[index]
-
         this.products[index] = {
             ...producto,
             ...data
