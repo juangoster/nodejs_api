@@ -1,4 +1,5 @@
 const express = require('express');
+const { logErrors, errorHandler, boomErrorHandler } = require('./middlewares/errorHandler');
 const routerApi = require('./routes');
 const app = express();
 const port = 3000;
@@ -9,6 +10,10 @@ app.listen(port, ()=>{
 })
 
 routerApi(app)
+app.use(boomErrorHandler);
+app.use(logErrors);
+app.use(errorHandler);
+
 
 //este es el endpoint de la landing
 app.get('/', (req, res)=>{
