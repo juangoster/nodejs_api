@@ -7,12 +7,19 @@ const router = express.Router();
 
 
 
-router.get('/', async (req, res)=>{
-    const products = await service.getAll();
-    res.json(products)
+router.get('/', 
+  async (req, res)=>{
+    try {
+      const products = await service.getAll();
+      res.json(products)
+    } catch (error) {
+      next(error)
+    }
 })
   
-router.get('/:id', async (req, res, next)=>{
+router.get('/:id', 
+validatorHandler(getProductSchema, 'params'),
+async (req, res, next)=>{
   try {
     const {id} = req.params
     const product = await service.getOne(id)
@@ -35,10 +42,17 @@ router.delete('/:id', async (req, res, next)=>{
   
 })
 
-router.post('/', async (req, res)=>{
-  const body = req.body;
-  const newProduct = await service.create(body);
-  res.status(201).json(newProduct)
+router.post('/', 
+validatorHandler(createProductSchema, 'body'),
+async (req, res, next)=>{
+  try {
+    const body = req.body;
+    const newProduct = await service.create(body);
+    res.status(201).json(newProduct)
+  } catch (error) {
+    next(error);
+  }
+
   
 })
 
@@ -50,16 +64,17 @@ router.put('/:id', async (req, res)=>{
 
 })
 
-router.patch('/:id', async (req, res)=>{
+router.patch('/:id', 
+validatorHandler(getProductSchema, 'params'),
+validatorHandler(updateProductSchema, 'body'),
+async (req, res, next)=>{
   try {
     const {id}= req.params;
     const body = req.body;
     const productUpdated = await service.updatePartial(id, body);
     res.json(productUpdated)
   } catch (error) {
-    res.status(404).json({
-      message: error.message
-    })
+    next(error);
   }
   
 
