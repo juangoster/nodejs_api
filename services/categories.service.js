@@ -1,4 +1,5 @@
 const {faker} = require('@faker-js/faker');
+const boom = require('@hapi/boom');
 
 class CategoriesService {
 
@@ -7,7 +8,7 @@ class CategoriesService {
         this.generate();
     }
 
-    generate(){
+    async generate(){
         const limit = 50;
         for (let index = 0; index < limit; index++) {
             this.categories.push({
@@ -18,19 +19,56 @@ class CategoriesService {
             
         }
     }
-    create(){
+ //---------------------------------------------------------------------------
 
+    async create(data){
+        const newCategory = {
+            id: 999,
+            ...data
+        }
+        return newCategory
     }
-    update(){
-
+    async update(id, data){
+        const index = this.categories.findIndex(item => item.id == id);
+        const updated = this.categories[index];
+        const category = this.categories.find(item => item.id == id);
+        if (!category){
+            throw boom.notFound('categoria no encontrada')
+        }
+        updated = {data};
+        return updated;
     }
-    find(){
+    async updatePartial(id, data){
+        const index = this.categories.findIndex(item => item.id == id);
+        const updated = this.categories[index];
+        const category = this.categories.find(item => item.id == id);
+        if (!category){
+            throw boom.notFound('categoria no encontrada')
+        }
+        this.categories[index] = {
+            ...updated,
+            ...data
+        }
+        return this.categories[index]
+    }
+    async getAll(){
         return this.categories;
     }
-    findOne(id){
+    async getOne(id){
+        const category = this.categories.find(item => item.id == id);
+        if (!category){
+            throw boom.notFound('categoria no encontrada')
+        }
         return this.categories.find(item => item.id == id)
     }
-    delete(){
+    async delete(id){
+        const index = this.categories.findIndex(item => item.id == id)
+        const category = this.categories.find(item => item.id == id);
+        if (!category){
+            throw boom.notFound('categoria no encontrada')
+        }
+        this.categories.splice(index,1);
+        return {message: 'categoria eliminada'}
 
     }
 }

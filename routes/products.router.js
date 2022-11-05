@@ -8,7 +8,7 @@ const router = express.Router();
 
 
 router.get('/', 
-  async (req, res)=>{
+  async (req, res, next)=>{
     try {
       const products = await service.getAll();
       res.json(products)
@@ -30,7 +30,8 @@ async (req, res, next)=>{
 
 })
 
-router.delete('/:id', async (req, res, next)=>{
+router.delete('/:id', 
+async (req, res, next)=>{
   try {
     const {id}= req.params;
     const deleted = await service.delete(id);

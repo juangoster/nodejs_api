@@ -3,10 +3,10 @@ const cors = require('cors')
 const { logErrors, errorHandler, boomErrorHandler } = require('./middlewares/errorHandler');
 const routerApi = require('./routes');
 
-routerApi(app)
 const app = express();
 const port = 3000;
 app.use(express.json()); // es un middleware que permite ver lo que se envia en un post en formato json
+routerApi(app);
 
 //middlewares creados por mi para manejar errores
 app.use(boomErrorHandler);
@@ -14,8 +14,8 @@ app.use(logErrors);
 app.use(errorHandler);
 
 //middleware cors para manejar el problema de cross origin, acá le damos acceso a la API solo a los de la whitelist
-app.use(cors(options))
-const whiteList = ['lhttp://localhost:4200', 'http://otraApp.com']
+
+const whiteList = ['http://localhost:4200', 'http://otraApp.com', 'http://localhost:3000']
 const options = {
   origin(origin, callback){
     if(whiteList.includes(origin)){
@@ -25,7 +25,7 @@ const options = {
   }
 
 }
-
+app.use(cors(options))
 
 //este es el endpoint de la landing
 app.get('/', (req, res)=>{

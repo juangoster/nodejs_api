@@ -30,9 +30,11 @@ class ProductService {
         this.products.push(newProduct)
         return newProduct;
     }
+
     async getAll(){
         return this.products;
     }
+
     async getOne(id){
         const producto = this.products.find(item => item.id == id);
         if(!producto){
@@ -43,6 +45,7 @@ class ProductService {
         }
             throw boom.forbidden('El producto no se encuentra disponible')
     }
+
     async delete(id){
         const producto = this.products.find(item => item.id == id);
         const index = this.products.findIndex(item => item.id == id);
@@ -53,6 +56,7 @@ class ProductService {
         this.products.splice(index, 1);
         return {message: 'product deleted'};    
     }
+
     async update(id, data){
         const producto = this.products.find(item => item.id == id);
         const index = this.products.findIndex(item => item.id == id);
@@ -62,6 +66,7 @@ class ProductService {
         this.products[index] = data;
         return this.products[index];
     }
+    
     async updatePartial(id, data){
         const product = this.products.find(item => item.id == id);
         const index = this.products.findIndex(item => item.id == id);
