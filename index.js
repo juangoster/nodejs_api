@@ -4,7 +4,7 @@ const { logErrors, errorHandler, boomErrorHandler } = require('./middlewares/err
 const routerApi = require('./routes');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 app.use(express.json()); // es un middleware que permite ver lo que se envia en un post en formato json
 routerApi(app);
 
@@ -18,7 +18,7 @@ app.use(errorHandler);
 const whiteList = ['http://localhost:4200', 'http://otraApp.com', 'http://localhost:3000']
 const options = {
   origin(origin, callback){
-    if(whiteList.includes(origin)){
+    if(whiteList.includes(origin) || !origin){
       callback(null, true);
     }
     callback(new Error('no tienes permitido el acceso a la API'))
