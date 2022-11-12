@@ -7,24 +7,16 @@ class UsersService {
     }
 
     async create(data){
-        const newUser = {
-            id: 999,
-            ...data
-        }
-        this.users.push(newUser)
+        const newUser = await models.User.create(data)           
         return newUser;
     }
 
     async update(id, data){
-        const user = this.users.find(item => item.id == id);
-        const index = this.users.findIndex(item => item.id == id);
-        if (!user){
-            throw boom.notFound('user not found')
-        }
-        this.users[index] = data;
-        return this.users[index];
+        const user = await this.getOne(id);
+        const response = await user.update(data)
+        return response
     }
-
+/*
     async updatePartial(id, data){
         const user = this.users.find(item => item.id == id);
         const index = this.users.findIndex(item => item.id == id);
@@ -38,29 +30,23 @@ class UsersService {
         };
         return this.users[index];
     }
-
+*/
     async getAll(){
         const res = await models.User.findAll()
         return res;
     }
 
     async getOne(id){
-        const user = this.users.find(item => item.id == id);
-        const index = this.users.findIndex(item => item.id == id);
-
+        const user = await models.User.findByPk(id);
         if (!user){
-            throw boom.notFound('usuario no encontrado')
+            throw boom.notFound('user not found')
         }
-        return this.users[index]
+        return user
     }
 
     async delete(id){
-        const user = this.users.find(item => item.id == id);
-        const index = this.users.findIndex(item => item.id == id);
-        if(!user){
-            throw boom.notFound('usuario no encontrado')
-        } 
-        this.users.splice(index,1);
+        const user = await this.getOne(id);
+        await user.destroy()
         return {message: 'user deleted'}
     }
 

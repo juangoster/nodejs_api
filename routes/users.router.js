@@ -3,6 +3,8 @@ const {faker} = require('@faker-js/faker')
 const UsersService = require('../services/users.service')
 const service = new UsersService()
 const router = express.Router();
+const validatorHandler = require('../middlewares/validatorHandler')
+const { createUserSchema, getUserSchema, updateUserSchema } = require('../schemas/user.schema');
 
 
 router.get('/', 
@@ -16,6 +18,7 @@ async (req, res, next)=>{
 })
 
 router.get('/:id', 
+validatorHandler(getUserSchema, 'id'),
 async (req, res, next)=>{
     try {
         const {id} = req.params;
@@ -37,7 +40,8 @@ async (req, res, next)=>{
     }
 })
 
-router.put('/:id', 
+router.put('/:id',
+validatorHandler(updateUserSchema, 'body'), 
 async (req, res, next)=>{
     try {
         const {id} = req.params;
@@ -49,7 +53,8 @@ async (req, res, next)=>{
     }
 })
 
-router.patch('/:id', 
+router.patch('/:id',
+validatorHandler(updateUserSchema, 'body'), 
 async (req, res, next)=>{
     try {
         const {id} = req.params;
@@ -62,6 +67,7 @@ async (req, res, next)=>{
 })
 
 router.post('/', 
+validatorHandler(createUserSchema, 'body'),
 async (req, res, next)=>{
     try {
         const data = req.body;
