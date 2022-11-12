@@ -1,14 +1,12 @@
 const {faker} = require('@faker-js/faker');
 const boom = require('@hapi/boom');
-const pool = require('../libs/postgres.pool');
+const sequelize = require('../libs/sequelize');
 
 class CategoriesService {
 
     constructor (){
         this.categories = []; 
         this.generate();
-        this.pool = pool;
-        this.pool.on('error', (err) => console.error(err));
     }
 
     async generate(){
@@ -55,9 +53,9 @@ class CategoriesService {
         return this.categories[index]
     }
     async getAll(){
-        const query = 'SELECT * FROM categories';
-        const res = await this.pool.query(query)
-        return res.rows;
+        const query = 'SELECT * FROM users';
+        const [data] = await sequelize.query(query)
+        return data;
     }
     async getOne(id){
         const category = this.categories.find(item => item.id == id);
