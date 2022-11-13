@@ -29,8 +29,6 @@ const ProductSchema = {
     isAvailable: {
         allowNull: false,
         type: DataTypes.BOOLEAN,
-        field: 'is_available',
-        default: false
     },
 }
 

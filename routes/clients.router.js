@@ -2,6 +2,8 @@ const express = require('express');
 const ClientsService = require('../services/clients.service')
 const service = new ClientsService()
 const router = express.Router();
+const validatorHandler = require('../middlewares/validatorHandler');
+const { createClientSchema, getClientSchema, updateClientSchema } = require('../schemas/client.schema')
 
 
 router.get('/', 
@@ -15,6 +17,7 @@ async (req, res, next)=>{
 })
 
 router.get('/:id', 
+validatorHandler(getClientSchema, 'params'),
 async (req, res, next)=>{
     try {
         const {id} = req.params;
@@ -26,6 +29,7 @@ async (req, res, next)=>{
 })
 
 router.delete('/:id', 
+validatorHandler(getClientSchema, 'params'),
 async (req, res, next)=>{
     try {
         const {id} = req.params;
@@ -36,7 +40,9 @@ async (req, res, next)=>{
     }
 })
 
-router.put('/:id', 
+router.put('/:id',
+validatorHandler(getClientSchema, 'params'), 
+validatorHandler(updateClientSchema, 'body'),
 async (req, res, next)=>{
     try {
         const {id} = req.params;
@@ -48,19 +54,8 @@ async (req, res, next)=>{
     }
 })
 
-router.patch('/:id', 
-async (req, res, next)=>{
-    try {
-        const {id} = req.params;
-        const data = req.body;
-        const updated = await service.updatePartial(id, data);
-        res.json(updated);
-    } catch (error) {
-        next(error);
-    }
-})
-
 router.post('/', 
+validatorHandler(createClientSchema, 'body'),
 async (req, res, next)=>{
     try {
         const data = req.body;

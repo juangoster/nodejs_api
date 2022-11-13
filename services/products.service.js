@@ -1,89 +1,41 @@
-const {faker} = require('@faker-js/faker');
 const boom = require('@hapi/boom');
-const pool = require('../libs/postgres.pool')
+const {models} = require('../libs/sequelize');
+
 
 class ProductService {
 
     constructor() {
-        this.products = []
-        this.generate();
-        this.pool = pool;
-        this.pool.on('error', (err) => console.error(err))
+        
     }
 
-    generate(){
-        const limit = 100 // esto son los query params, de acá se setea lo que uno quiere como parametros en el endpoint para filtrar
-        for (let index = 0; index < limit; index++) {
-            this.products.push({
-                id: index,
-                name: faker.commerce.productName(),
-                description: faker.commerce.productDescription(),
-                price: parseInt(faker.commerce.price(), 10),
-                image: faker.image.imageUrl(),
-                isAvailable: faker.datatype.boolean()
-            }) 
-        }
-    }
-//---------------------------------------------------------------------------
     async create(data){
-        const newProduct = {
-            id: 999,
-            ...data
-        }
-        this.products.push(newProduct)
+        const newProduct = await models.Product.create(data);
         return newProduct;
     }
 
     async getAll(){
-        const query = 'SELECT * FROM products';
-        const res = await this.pool.query(query)
-        return res.rows;
+        const response = await models.Product.findAll()
+        return response;
     }
 
     async getOne(id){
-        const producto = this.products.find(item => item.id == id);
-        if(!producto){
+        const product = await models.Product.findByPk(id)
+        if(!product){
             throw boom.notFound('Producto no encontrado');
         }
-        if (producto.isAvailable){
-            return producto;
-        }
-            throw boom.forbidden('El producto no se encuentra disponible')
+        return product;
     }
 
     async delete(id){
-        const producto = this.products.find(item => item.id == id);
-        const index = this.products.findIndex(item => item.id == id);
-        if (!producto){
-            throw boom.notFound('Producto no encontrado');
-            
-        }
-        this.products.splice(index, 1);
+        const product = await this.getOne(id)
+        await product.destroy()
         return {message: 'product deleted'};    
     }
 
     async update(id, data){
-        const producto = this.products.find(item => item.id == id);
-        const index = this.products.findIndex(item => item.id == id);
-        if (!producto){
-            throw boom.notFound('Producto no encontrado');
-        }
-        this.products[index] = data;
-        return this.products[index];
-    }
-    
-    async updatePartial(id, data){
-        const product = this.products.find(item => item.id == id);
-        const index = this.products.findIndex(item => item.id == id);
-        if (!product){
-            throw boom.notFound('Producto no encontrado');
-        }
-        const producto = this.products[index]
-        this.products[index] = {
-            ...producto,
-            ...data
-        };
-        return this.products[index];
+        const product = await this.getOne(id);
+        const response = await product.update(data);
+        return response
     }
 }
 

@@ -3,7 +3,7 @@ const { models } = require('../libs/sequelize');
 
 class UsersService {
     constructor (){
-        this.users = [];
+
     }
 
     async create(data){
@@ -16,21 +16,7 @@ class UsersService {
         const response = await user.update(data)
         return response
     }
-/*
-    async updatePartial(id, data){
-        const user = this.users.find(item => item.id == id);
-        const index = this.users.findIndex(item => item.id == id);
-        if (!user){
-            throw boom.notFound('user not found')
-        }
-        const usuario = this.users[index]
-        this.users[index] = {
-            ...usuario,
-            ...data
-        };
-        return this.users[index];
-    }
-*/
+
     async getAll(){
         const res = await models.User.findAll()
         return res;

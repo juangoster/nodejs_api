@@ -1,77 +1,37 @@
-const {faker} = require('@faker-js/faker');
 const boom = require('@hapi/boom');
-const sequelize = require('../libs/sequelize');
+const {models} = require('../libs/sequelize');
 
 class CategoriesService {
 
     constructor (){
-        this.categories = []; 
-        this.generate();
-    }
 
-    async generate(){
-        const limit = 50;
-        for (let index = 0; index < limit; index++) {
-            this.categories.push({
-                id: index,
-                name: faker.commerce.department(),
-                description: faker.commerce.productAdjective()
-            });
-            
-        }
     }
- //---------------------------------------------------------------------------
 
     async create(data){
-        const newCategory = {
-            id: 999,
-            ...data
-        }
+        const newCategory = await models.Category.create(data)
         return newCategory
     }
     async update(id, data){
-        const index = this.categories.findIndex(item => item.id == id);
-        const updated = this.categories[index];
-        const category = this.categories.find(item => item.id == id);
-        if (!category){
-            throw boom.notFound('categoria no encontrada')
-        }
-        updated = {data};
-        return updated;
+        const category = await this.getOne(id);
+        const response = await category.update(data);
+        return response;
     }
-    async updatePartial(id, data){
-        const index = this.categories.findIndex(item => item.id == id);
-        const updated = this.categories[index];
-        const category = this.categories.find(item => item.id == id);
-        if (!category){
-            throw boom.notFound('categoria no encontrada')
-        }
-        this.categories[index] = {
-            ...updated,
-            ...data
-        }
-        return this.categories[index]
-    }
+
     async getAll(){
-        const query = 'SELECT * FROM users';
-        const [data] = await sequelize.query(query)
-        return data;
+        const response = models.Category.findAll();
+        return response;
     }
     async getOne(id){
-        const category = this.categories.find(item => item.id == id);
+        const category = await models.Category.findByPk(id)
         if (!category){
             throw boom.notFound('categoria no encontrada')
         }
-        return this.categories.find(item => item.id == id)
+        return category
     }
     async delete(id){
-        const index = this.categories.findIndex(item => item.id == id)
-        const category = this.categories.find(item => item.id == id);
-        if (!category){
-            throw boom.notFound('categoria no encontrada')
-        }
-        this.categories.splice(index,1);
-        return {message: 'categoria eliminada'}
+        const category = await this.getOne(id);
+        await category.destroy();
+        return {message: 'categoría eliminada'}
 
     }
 }

@@ -18,7 +18,7 @@ async (req, res, next)=>{
 })
 
 router.get('/:id', 
-validatorHandler(getUserSchema, 'id'),
+validatorHandler(getUserSchema, 'params'),
 async (req, res, next)=>{
     try {
         const {id} = req.params;
@@ -30,6 +30,7 @@ async (req, res, next)=>{
 })
 
 router.delete('/:id', 
+validatorHandler(getUserSchema, 'params'),
 async (req, res, next)=>{
     try {
         const {id} = req.params;
@@ -41,25 +42,13 @@ async (req, res, next)=>{
 })
 
 router.put('/:id',
+validatorHandler(getUserSchema, 'params'),
 validatorHandler(updateUserSchema, 'body'), 
 async (req, res, next)=>{
     try {
         const {id} = req.params;
         const data = req.body;
         const updated = await service.update(id, data);
-        res.json(updated);
-    } catch (error) {
-        next(error);
-    }
-})
-
-router.patch('/:id',
-validatorHandler(updateUserSchema, 'body'), 
-async (req, res, next)=>{
-    try {
-        const {id} = req.params;
-        const data = req.body;
-        const updated = await service.updatePartial(id, data);
         res.json(updated);
     } catch (error) {
         next(error);

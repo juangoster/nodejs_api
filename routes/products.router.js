@@ -30,7 +30,8 @@ async (req, res, next)=>{
 
 })
 
-router.delete('/:id', 
+router.delete('/:id',
+validatorHandler(getProductSchema, 'params'), 
 async (req, res, next)=>{
   try {
     const {id}= req.params;
@@ -57,30 +58,15 @@ async (req, res, next)=>{
   
 })
 
-router.put('/:id', async (req, res)=>{
+router.put('/:id', 
+validatorHandler(getProductSchema, 'params'),
+validatorHandler(updateProductSchema, 'body'),
+async (req, res)=>{
   const {id}= req.params;
   const body = req.body;
   const productUpdated = await service.update(id, body);
   res.json(productUpdated)
 
 })
-
-router.patch('/:id', 
-validatorHandler(getProductSchema, 'params'),
-validatorHandler(updateProductSchema, 'body'),
-async (req, res, next)=>{
-  try {
-    const {id}= req.params;
-    const body = req.body;
-    const productUpdated = await service.updatePartial(id, body);
-    res.json(productUpdated)
-  } catch (error) {
-    next(error);
-  }
-  
-
-})
-
-
 
 module.exports = router;
