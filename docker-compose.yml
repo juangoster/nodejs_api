@@ -13,6 +13,18 @@ services:
       - "5432:5432"
     volumes:
       - /postgres_data:/var/lib/postgresql/data
+  
+  mysql:
+    image: mysql:5
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=juan1039
+      - MYSQL_DATABASE=my_store
+      - MYSQL_PORT=3306
+    ports:
+      - "3306:3306"
+    volumes:
+      - /mysql_data:/var/lib/mysql
 
   pgadmin:
     image: dpage/pgadmin4
@@ -23,3 +35,13 @@ services:
       - "5050:80"
     depends_on:
       - postgres
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - PMA_HOST=mysql
+      - MYSQL_ROOT_PASSWORD=juan1039
+    ports:
+      - 8080:80
+    depends_on:
+      - mysql

@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors')
-const { logErrors, errorHandler, boomErrorHandler } = require('./middlewares/errorHandler');
+const { logErrors, errorHandler, boomErrorHandler, ormErrorHandler } = require('./middlewares/errorHandler');
 const routerApi = require('./routes');
 
 const app = express();
@@ -12,6 +12,7 @@ routerApi(app);
 app.use(boomErrorHandler);
 app.use(logErrors);
 app.use(errorHandler);
+app.use(ormErrorHandler);
 
 //middleware cors para manejar el problema de cross origin, acá le damos acceso a la API solo a los de la whitelist
 
